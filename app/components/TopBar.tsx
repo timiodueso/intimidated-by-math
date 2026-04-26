@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useVoice } from "./VoiceContext";
 import { T } from "@/lib/tokens";
 
 const ROUTE_LABELS: Record<string, string> = {
-  "/":           "Home",
-  "/session":    "Session",
-  "/deep-dive":  "Deep Dive",
+  "/home":       "Home",
+  "/session":    "Practice",
+  "/deep-dive":  "Learn",
   "/simulation": "Simulation",
-  "/progress":   "Stats",
+  "/progress":   "Progress",
   "/memes":      "Memes",
   "/settings":   "Settings",
 };
@@ -38,6 +39,9 @@ export default function TopBar() {
       <div style={{ fontFamily: T.mono, fontSize: 10, color: T.ash, textTransform: "uppercase", letterSpacing: 1.6 }}>
         {label}
       </div>
+
+      {/* Right side: voice selector + gear */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
 
       {/* Voice selector */}
       <div style={{ position: "relative" }}>
@@ -80,6 +84,24 @@ export default function TopBar() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Gear icon → /settings */}
+      <Link
+        href="/settings"
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "center",
+          width: 32, height: 32,
+          border: `1px solid ${T.hairline}`,
+          color: T.ash,
+          fontFamily: T.mono, fontSize: 14,
+          textDecoration: "none",
+          flexShrink: 0,
+        }}
+      >
+        ⚙
+      </Link>
+
       </div>
     </div>
   );

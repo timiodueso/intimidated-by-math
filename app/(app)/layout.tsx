@@ -1,3 +1,4 @@
+import Link from "next/link";
 import SideNav from "@/app/components/SideNav";
 import TopBar from "@/app/components/TopBar";
 import BottomNav from "@/app/components/BottomNav";
@@ -53,6 +54,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           {/* Mobile bottom nav */}
           <BottomNav />
+
+          {/* Mobile gear icon — fixed top-right, hidden on desktop */}
+          <Link
+            href="/settings"
+            className="md:hidden"
+            style={{
+              position: "fixed",
+              top: 16, right: 16,
+              width: 36, height: 36,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: T.paper,
+              border: `1px solid ${T.hairline}`,
+              color: T.ash,
+              fontFamily: T.mono, fontSize: 15,
+              textDecoration: "none",
+              zIndex: 40,
+            }}
+          >
+            ⚙
+          </Link>
         </div>
       </div>
     </VoiceProvider>

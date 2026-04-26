@@ -6,13 +6,11 @@ import { useVoice } from "./VoiceContext";
 import { T } from "@/lib/tokens";
 
 const NAV = [
-  { label: "Home",       href: "/",           icon: "⌂" },
-  { label: "Session",    href: "/session",     icon: "▶" },
-  { label: "Deep Dive",  href: "/deep-dive",   icon: "◎" },
-  { label: "Simulation", href: "/simulation",  icon: "⏱" },
-  { label: "Stats",      href: "/progress",    icon: "◈" },
-  { label: "Memes",      href: "/memes",       icon: "◉" },
-  { label: "Settings",   href: "/settings",    icon: "⚙" },
+  { label: "Home",     href: "/home",      icon: "⌂" },
+  { label: "Practice", href: "/session",   icon: "▶" },
+  { label: "Learn",    href: "/deep-dive", icon: "◎" },
+  { label: "Progress", href: "/progress",  icon: "◈" },
+  { label: "Memes",    href: "/memes",     icon: "◉" },
 ];
 
 export default function SideNav() {

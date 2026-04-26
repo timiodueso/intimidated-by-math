@@ -9,7 +9,8 @@
       "Bash(tar -x -C /tmp/design-bundle echo \"Extracted\")",
       "Bash(npm install:*)",
       "Bash(npm run:*)",
-      "WebFetch(domain:api.anthropic.com)"
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(git commit:*)"
     ]
   }
 }

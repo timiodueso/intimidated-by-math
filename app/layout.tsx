@@ -30,7 +30,11 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${inter.variable} ${GeistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full" style={{ background: "#FAFAF8", color: "#1A1714" }}>
+      {/* md: fixed height so the desktop card shell can fill full viewport */}
+      <body
+        className="min-h-full md:h-full md:overflow-hidden"
+        style={{ background: "#FAFAF8", color: "#1A1714" }}
+      >
         {children}
       </body>
     </html>

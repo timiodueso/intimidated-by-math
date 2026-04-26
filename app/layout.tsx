@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-geist-sans",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: "variable",
+  style: ["normal", "italic"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -18,8 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-50">
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${inter.variable} ${GeistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full" style={{ background: "#FAFAF8", color: "#1A1714" }}>
         {children}
       </body>
     </html>

@@ -2,51 +2,58 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  Dumbbell,
-  BookOpen,
-  TrendingUp,
-  Laugh,
-  FlaskConical,
-  Settings,
-} from "lucide-react";
+import { T } from "@/lib/tokens";
 
-const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Session", href: "/session", icon: Dumbbell },
-  { label: "Deep Dive", href: "/deep-dive", icon: BookOpen },
-  { label: "Progress", href: "/progress", icon: TrendingUp },
-  { label: "Memes", href: "/memes", icon: Laugh },
-  { label: "Sim", href: "/simulation", icon: FlaskConical },
-  { label: "Settings", href: "/settings", icon: Settings },
+const NAV_ITEMS = [
+  { k: "home",      label: "home",      href: "/" },
+  { k: "session",   label: "session",   href: "/session" },
+  { k: "learn",     label: "deep dive", href: "/deep-dive" },
+  { k: "stats",     label: "progress",  href: "/progress" },
+  { k: "memes",     label: "memes",     href: "/memes" },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 dark:bg-gray-950 dark:border-gray-800">
-      <ul className="flex items-stretch h-16">
-        {navItems.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href;
-          return (
-            <li key={href} className="flex-1">
-              <Link
-                href={href}
-                className={`flex flex-col items-center justify-center h-full gap-0.5 text-[10px] font-medium transition-colors
-                  ${active
-                    ? "text-indigo-600 dark:text-indigo-400"
-                    : "text-gray-500 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400"
-                  }`}
-              >
-                <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
-                <span>{label}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+    <nav
+      className="md:hidden"
+      style={{
+        position: "fixed",
+        bottom: 0, left: 0, right: 0,
+        background: T.paper,
+        borderTop: `1px solid ${T.hairline}`,
+        padding: "10px 12px 30px",
+        display: "grid",
+        gridTemplateColumns: `repeat(${NAV_ITEMS.length}, 1fr)`,
+        gap: 4,
+        zIndex: 50,
+      }}
+    >
+      {NAV_ITEMS.map((item) => {
+        const active = pathname === item.href;
+        return (
+          <Link
+            key={item.k}
+            href={item.href}
+            style={{
+              textAlign: "center",
+              padding: "8px 4px",
+              fontFamily: T.mono,
+              fontSize: 9,
+              color: active ? T.ink : T.mist,
+              textTransform: "uppercase",
+              letterSpacing: 1.2,
+              textDecoration: "none",
+              borderTop: active
+                ? `1px solid ${T.terracotta}`
+                : "1px solid transparent",
+            }}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
     </nav>
   );
 }

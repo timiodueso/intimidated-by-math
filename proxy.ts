@@ -38,7 +38,16 @@ export async function proxy(request: NextRequest) {
 
   const {
     data: { user },
+    error: getUserError,
   } = await supabase.auth.getUser();
+
+  // If getUser() fails (network error / Supabase outage), allow the request
+  // through rather than incorrectly redirecting to login — which would cause
+  // a loop on mobile where network calls can fail transiently.
+  if (getUserError) {
+    console.error("[proxy] getUser failed:", getUserError.message);
+    return supabaseResponse;
+  }
 
   const isAuthRoute = pathname === "/login" || pathname === "/signup";
 

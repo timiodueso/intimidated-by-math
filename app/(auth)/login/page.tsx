@@ -3,10 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -22,8 +20,9 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/home");
-      router.refresh();
+      // Full-page navigation guarantees cookies are sent with the next request.
+      // router.push + router.refresh races on mobile, breaking session cookie timing.
+      window.location.href = "/home";
     }
   }
 

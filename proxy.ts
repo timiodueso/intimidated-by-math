@@ -4,8 +4,8 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Let the auth callback route handle itself — never touch the Supabase client
-  // here for this route, or the PKCE code verifier cookie gets corrupted on mobile.
+  // Let the auth callback route handle itself entirely — running getUser() here
+  // before the code exchange happens would corrupt the PKCE code verifier cookie.
   if (pathname === "/auth/callback") {
     return NextResponse.next({ request });
   }
@@ -25,20 +25,17 @@ export async function proxy(request: NextRequest) {
             request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({ request });
+          // IMPORTANT: do NOT override httpOnly here.
+          // Supabase defaults to httpOnly: false so the browser client can read
+          // session cookies. Overriding to true breaks mobile browser auth state.
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, {
-              ...options,
-              sameSite: "lax",
-              httpOnly: true,
-              secure: true,
-            })
+            supabaseResponse.cookies.set(name, value, options)
           );
         },
       },
     }
   );
 
-  // Refresh session — must be called before any protected route checks
   const {
     data: { user },
   } = await supabase.auth.getUser();

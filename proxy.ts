@@ -56,7 +56,47 @@ export async function proxy(request: NextRequest) {
   }
 
   if (user && isAuthRoute) {
-    return NextResponse.redirect(new URL("/home", request.url));
+    // Returning users who are onboarded → home; new users → onboarding
+    const onboarded =
+      request.cookies.get("itbm_onboarded")?.value === "1" ||
+      user.user_metadata?.onboarding_complete === true;
+    return NextResponse.redirect(
+      new URL(onboarded ? "/home" : "/onboarding", request.url)
+    );
+  }
+
+  // Authenticated from here on — enforce onboarding for app routes
+  if (user && pathname !== "/onboarding") {
+    // Fast path: trust the cookie set by the onboarding page on completion
+    const onboardedCookie =
+      request.cookies.get("itbm_onboarded")?.value === "1";
+
+    if (!onboardedCookie) {
+      const onboardingComplete =
+        user.user_metadata?.onboarding_complete === true;
+
+      if (!onboardingComplete) {
+        return NextResponse.redirect(new URL("/onboarding", request.url));
+      }
+
+      // Metadata says complete — stamp the cookie so we skip this check next time
+      supabaseResponse.cookies.set("itbm_onboarded", "1", {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: "lax",
+      });
+    }
+  }
+
+  // Onboarding route: only reachable by authenticated + not-yet-onboarded users.
+  // If they're already done, bounce them home.
+  if (user && pathname === "/onboarding") {
+    const onboarded =
+      request.cookies.get("itbm_onboarded")?.value === "1" ||
+      user.user_metadata?.onboarding_complete === true;
+    if (onboarded) {
+      return NextResponse.redirect(new URL("/home", request.url));
+    }
   }
 
   return supabaseResponse;

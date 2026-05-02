@@ -56,45 +56,74 @@ export async function proxy(request: NextRequest) {
   }
 
   if (user && isAuthRoute) {
-    // Returning users who are onboarded → home; new users → onboarding
     const onboarded =
       request.cookies.get("itbm_onboarded")?.value === "1" ||
       user.user_metadata?.onboarding_complete === true;
+    if (!onboarded) {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+    const diagnosed =
+      request.cookies.get("itbm_diagnosed")?.value === "1" ||
+      user.user_metadata?.diagnostic_complete === true;
     return NextResponse.redirect(
-      new URL(onboarded ? "/home" : "/onboarding", request.url)
+      new URL(diagnosed ? "/home" : "/diagnostic", request.url)
     );
   }
 
-  // Authenticated from here on — enforce onboarding for app routes
+  // Authenticated from here on — enforce onboarding then diagnostic
   if (user && pathname !== "/onboarding") {
-    // Fast path: trust the cookie set by the onboarding page on completion
     const onboardedCookie =
       request.cookies.get("itbm_onboarded")?.value === "1";
 
     if (!onboardedCookie) {
       const onboardingComplete =
         user.user_metadata?.onboarding_complete === true;
-
       if (!onboardingComplete) {
         return NextResponse.redirect(new URL("/onboarding", request.url));
       }
-
-      // Metadata says complete — stamp the cookie so we skip this check next time
       supabaseResponse.cookies.set("itbm_onboarded", "1", {
         path: "/",
         maxAge: 60 * 60 * 24 * 365,
         sameSite: "lax",
       });
     }
+
+    // After onboarding — enforce diagnostic for all routes except /diagnostic itself
+    if (pathname !== "/diagnostic") {
+      const diagnosedCookie =
+        request.cookies.get("itbm_diagnosed")?.value === "1";
+
+      if (!diagnosedCookie) {
+        const diagnosticComplete =
+          user.user_metadata?.diagnostic_complete === true;
+        if (!diagnosticComplete) {
+          return NextResponse.redirect(new URL("/diagnostic", request.url));
+        }
+        supabaseResponse.cookies.set("itbm_diagnosed", "1", {
+          path: "/",
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: "lax",
+        });
+      }
+    }
   }
 
-  // Onboarding route: only reachable by authenticated + not-yet-onboarded users.
-  // If they're already done, bounce them home.
+  // Onboarding: bounce completed users away
   if (user && pathname === "/onboarding") {
     const onboarded =
       request.cookies.get("itbm_onboarded")?.value === "1" ||
       user.user_metadata?.onboarding_complete === true;
     if (onboarded) {
+      return NextResponse.redirect(new URL("/home", request.url));
+    }
+  }
+
+  // Diagnostic: bounce completed users away
+  if (user && pathname === "/diagnostic") {
+    const diagnosed =
+      request.cookies.get("itbm_diagnosed")?.value === "1" ||
+      user.user_metadata?.diagnostic_complete === true;
+    if (diagnosed) {
       return NextResponse.redirect(new URL("/home", request.url));
     }
   }

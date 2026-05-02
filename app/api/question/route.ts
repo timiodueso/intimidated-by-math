@@ -72,13 +72,16 @@ Rules:
   }
 
   const data = await res.json();
-  const text: string = data.content?.[0]?.text ?? "";
+  const raw: string = data.content?.[0]?.text ?? "";
+
+  // Strip markdown fences if the model wrapped the JSON
+  const text = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
 
   try {
     const question = JSON.parse(text);
     return NextResponse.json(question);
   } catch {
-    console.error("JSON parse failed:", text);
+    console.error("JSON parse failed:", raw);
     return NextResponse.json({ error: "Failed to parse question from API" }, { status: 500 });
   }
 }

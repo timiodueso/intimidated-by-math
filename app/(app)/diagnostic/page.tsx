@@ -63,8 +63,16 @@ type Domain = (typeof DOMAINS)[number];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function normalize(s: string): number {
+  // Strip currency symbols, units, %, commas, spaces — keep digits, dot, minus
+  const digits = s.replace(/[^0-9.\-]/g, "");
+  return parseFloat(digits);
+}
+
 function checkAnswer(input: string, correct: string): boolean {
-  return parseFloat(input.trim()) === parseFloat(correct);
+  const a = normalize(input);
+  const b = normalize(correct);
+  return !isNaN(a) && !isNaN(b) && a === b;
 }
 
 function masteryFor(domain: Domain, results: boolean[]): 0 | 50 | 100 {
@@ -224,6 +232,18 @@ function QuizPhase({
               outline: "none",
             }}
           />
+          <div
+            style={{
+              marginTop: 6,
+              fontFamily: T.mono,
+              fontSize: 9,
+              color: T.mist,
+              textTransform: "uppercase",
+              letterSpacing: 1.2,
+            }}
+          >
+            Enter numbers only — no symbols or units needed
+          </div>
         </div>
       )}
 

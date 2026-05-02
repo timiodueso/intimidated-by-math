@@ -2,6 +2,7 @@ import SideNav from "@/app/components/SideNav";
 import TopBar from "@/app/components/TopBar";
 import BottomNav from "@/app/components/BottomNav";
 import { VoiceProvider } from "@/app/components/VoiceContext";
+import { T } from "@/lib/tokens";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (

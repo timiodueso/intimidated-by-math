@@ -80,7 +80,7 @@ export default function SessionPage() {
           const bg     = showGreen ? "#E8F0E3" : showRed ? T.terracottaTint : isPicked ? T.cream : T.paper;
           const border = showGreen ? T.sage     : showRed ? T.terracotta    : isPicked ? T.ink   : T.hairline;
           return (
-            <div key={o.k} onClick={() => !submitted && setPicked(o.k)}
+            <div key={o.k} onClick={() => { if (!submitted) { setPicked(o.k); setSubmitted(true); } }}
               style={{ padding: "14px 16px", background: bg, border: `1px solid ${border}`, cursor: submitted ? "default" : "pointer", display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ fontFamily: T.mono, fontSize: 11, width: 18, color: isPicked || showGreen ? T.ink : T.ash, letterSpacing: 1 }}>{o.k}</div>
               <div style={{ fontFamily: T.serif, fontSize: 17, color: T.ink, flex: 1, letterSpacing: -0.2 }}>{o.text}</div>
@@ -132,17 +132,11 @@ export default function SessionPage() {
       )}
 
       {/* Bottom action bar */}
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: T.paper, borderTop: `1px solid ${T.hairline}`, padding: "12px 18px 28px", zIndex: 10 }}>
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: T.paper, borderTop: `1px solid ${T.hairline}`, padding: "12px 18px 28px", zIndex: 60 }}>
         {!submitted ? (
-          <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={() => setHinted(true)} disabled={hinted} style={{ padding: "14px 16px", background: "transparent", border: `1px solid ${T.line}`, fontFamily: T.mono, fontSize: 10, color: hinted ? T.mist : T.ash, textTransform: "uppercase", letterSpacing: 1.4, cursor: hinted ? "default" : "pointer" }}>
-              {hinted ? "✓ hint shown" : "◉ hint"}
-            </button>
-            <button onClick={() => picked && setSubmitted(true)} disabled={!picked} style={{ flex: 1, padding: "14px", background: picked ? T.ink : T.hairline, color: picked ? T.paper : T.mist, border: "none", fontFamily: T.serif, fontSize: 17, letterSpacing: -0.2, cursor: picked ? "pointer" : "default", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>Submit</span>
-              {picked && <span style={{ fontStyle: "italic", color: T.terracotta }}>→</span>}
-            </button>
-          </div>
+          <button onClick={() => setHinted(true)} disabled={hinted} style={{ width: "100%", padding: "14px 16px", background: "transparent", border: `1px solid ${T.line}`, fontFamily: T.mono, fontSize: 10, color: hinted ? T.mist : T.ash, textTransform: "uppercase", letterSpacing: 1.4, cursor: hinted ? "default" : "pointer" }}>
+            {hinted ? "✓ hint shown" : "◉ hint"}
+          </button>
         ) : (
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={reset} style={{ padding: "14px 16px", background: "transparent", border: `1px solid ${T.line}`, fontFamily: T.mono, fontSize: 10, color: T.ash, textTransform: "uppercase", letterSpacing: 1.4, cursor: "pointer" }}>

@@ -23,13 +23,11 @@ export default function SideNav() {
         flexShrink: 0,
         background: T.paper,
         borderRight: `1px solid ${T.hairline}`,
-        display: "flex",
-        flexDirection: "column",
         height: "100%",
         overflow: "hidden",
       }}
       /* 240px on lg+, 64px on md–lg (icon rail), hidden on mobile */
-      className="hidden md:flex w-16 lg:w-60"
+      className="hidden md:flex md:flex-col w-16 lg:w-60"
     >
       {/* Wordmark */}
       <div

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { T } from "@/lib/tokens";
 
 type Question = {
@@ -37,6 +38,7 @@ const SEED: Question = {
 const TOTAL = 5;
 
 export default function SessionPage() {
+  const router = useRouter();
   const [question,     setQuestion]  = useState<Question>(SEED);
   const [loading,      setLoading]   = useState(false);
   const [fetchError,   setFetchError] = useState<string | null>(null);
@@ -85,7 +87,11 @@ export default function SessionPage() {
 
       {/* Top bar */}
       <div style={{ padding: "56px 18px 14px", display: "flex", alignItems: "center", gap: 12, borderBottom: `1px solid ${T.hairline}` }}>
-        <div style={{ fontFamily: T.mono, fontSize: 14, color: T.ash }}>×</div>
+        <button
+          onClick={() => router.push("/home")}
+          style={{ fontFamily: T.mono, fontSize: 18, color: T.ash, background: "none", border: "none", cursor: "pointer", padding: "8px 8px 8px 0", lineHeight: 1 }}
+          aria-label="Exit session"
+        >×</button>
         <div style={{ flex: 1, display: "flex", gap: 3 }}>
           {Array.from({ length: TOTAL }, (_, i) => i + 1).map(n => (
             <div key={n} style={{ flex: 1, height: 3, background: n < qNum ? T.ink : n === qNum ? T.terracotta : T.hairline }} />
